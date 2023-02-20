@@ -17,17 +17,18 @@ const address_model_1 = __importDefault(require("../models/address.model"));
 //export const addressService = {
 const addAddress = (newAddressEntry) => __awaiter(void 0, void 0, void 0, function* () {
     //const address = await Address.create(newAddressEntry)
-    const address = yield address_model_1.default.create(newAddressEntry);
-    return address.save();
+    const address = yield address_model_1.default.create(newAddressEntry); //create(newAddressEntry)
+    return address;
 });
 exports.addAddress = addAddress;
 const getAddressById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const address = yield address_model_1.default.findById((address) => address.id === id);
+    const address = yield address_model_1.default.findById(id);
+    return address;
     //addresses.find(address => address.id === id)
-    if (address != null) {
-        return address;
+    /* if (address != null) {
+        return address
     }
-    return undefined;
+    return undefined */
 });
 exports.getAddressById = getAddressById;
 //# sourceMappingURL=address.services.js.map
