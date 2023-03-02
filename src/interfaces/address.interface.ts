@@ -1,15 +1,16 @@
 import { Document } from "mongoose";
 //export interfaces
 
+export interface StateProvince {
+    name: String;
+    postalCode: String;
+}
 export interface IAddressEntry extends Document{
     id: string;
     street: string;
     numbreStreet: Number;
     country: string;
-    stateProvince:{
-        name: String;
-        postalCode: String;
-    }
+    stateProvince: StateProvince
 }
 
 // export types

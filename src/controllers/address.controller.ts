@@ -8,80 +8,83 @@ import { addAddress, getAddressById } from "../services/address.services";
 //const Address = mongoose.model("Address", addressSchema);
 
 export class AddressController {
-    /**
-     * createAddress
-     */
-    public createAddress(req: Request, res: Response): any{
-        try {
-            let campos = new AddressModel (
-                req.body
-            )
+	/**
+	 * createAddress
+	 */
+	public async createAddress(req: Request, res: Response): Promise<any> {
+		try {
+			const { street, numbreStreet, country, stateProvince } = req.body;
+			
+			const campos = new AddressModel(
+				{ street, numbreStreet, country, stateProvince }
+			)
 
-            let newAddress = addAddress(campos)
-            if (newAddress == null) {
-                res.status(502).send("error to create address"); 
-            }
-            res.sendStatus(200).send({message: "Address created"});
-            
-        } catch (e: any) {
-            res.sendStatus(400).send(e.message);
-        }
-    }
+			const newAddress = await  addAddress(campos)
+			
+			if (!newAddress) 
+				return res.status(502).send("error to create address");
+			
+			return res.status(200).send({ message: "Address created" });
 
-    /**
-     * getAddressID
-     */
-    public getAddress(req: Request, res: Response) {
+		} catch (error: any) {
+			return res.sendStatus(400).send(error.message);
+		}
+	}
 
-        let address = getAddressById(+req.params.addressId)
-        return (address != null) 
-            ? res.send(address)
-            : res.status(404).send("Address not found");
+	/**
+	 * getAddressID
+	 */
+	public async getAddress(req: Request, res: Response) {
 
-        /*AddressModel.findById(req.params.addressId, (err: any, address: any) => {
-            if (err) {
-                res.status(502).send(err.message);
-            }
-            res.json(address);
-        });*/
-    }
+		const address = await getAddressById(req.params.id)
+		return address
+			? res.status(200).send(address)
+			: res.status(404).send("Address not found");
 
-    /**
-     * updateAddress
-     */
-    public updateAddress(req: Request, res: Response) {
-        AddressModel.findByIdAndUpdate({_id: req.params.addressId}, req.body, (err:any, address:any) => {
-            if(err){
-                res.status(502).send(err.message);
-            }
-            res.status(200).json(address);
-        });
-    }
+		/*AddressModel.findById(req.params.addressId, (err: any, address: any) => {
+				if (err) {
+						res.status(502).send(err.message);
+				}
+				res.json(address);
+		});*/
+	}
 
-    /**
-     * deleteAddress
-     */
-    public deleteAddress(req: Request, res: Response) {
-        AddressModel.findByIdAndDelete({_id: req.params.addressId}, (err: any) => {
-            if (err) {
-                res.status(502).send(err.message);
-            }
-            res.status(200).json({message: 'Address deleted'});
-        });
-    }
+	/**
+	 * updateAddress
+	 */
+	public async updateAddress(req: Request, res: Response) {
+		try{
+			const addressUpdated = await AddressModel.findByIdAndUpdate(req.params.id , req.body) 
+			return res.status(200).json(addressUpdated);
+
+		} catch(error: any){
+			return res.status(502).send(error.message);
+		}
+	}
+
+	/**
+	 * deleteAddress
+	 */
+	public deleteAddress(req: Request, res: Response) {
+		AddressModel.findByIdAndDelete({ _id: req.params.addressId }, (err: any) => {
+			if (err) {
+				res.status(502).send(err.message);
+			}
+			res.status(200).json({ message: 'Address deleted' });
+		});
+	}
 
 }
 
-/*export const createAddress = async (req: Request, res: Response) => {
-    
-    // @ts-ignore
-    const address: IAddress = new Address({
-        address: req.body.address,
-        country: req.body.country,
-        stateProvince: req.body.stateProvince
-    });
-    // @ts-ignore
-    const saveAddress = await address.save();
-    res.status(200).json(saveAddress);
-};*/
+export const createAddress = async (req: Request, res: Response) => {
+
+	// @ts-ignore
+	const address: IAddress = new Address({
+		address: req.body.address,
+		country: req.body.country,
+		stateProvince: req.body.stateProvince
+	});
+	const saveAddress = await address.save();
+	res.status(200).json(saveAddress);
+};
 

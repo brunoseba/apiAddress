@@ -4,7 +4,6 @@ import { Request, Response } from "express";
 import {AddressController} from "../controllers/address.controller"
 //const router: Router = Router();
 //const address: AddressController = new AddressController()
-
 export class Routes {
     /**
      * addressController
