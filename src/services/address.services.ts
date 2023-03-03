@@ -11,11 +11,15 @@ export const addAddress = async (newAddressEntry: CustomAddressOmitId): Promise<
 }
 
 export const getAddressById = async (id: string): Promise<GetAddressEntry | null> => {
-    const address = await Address.findById(id)
+    const address = await Address.findById(id )
     return address;
     //addresses.find(address => address.id === id)
     /* if (address != null) {
         return address
     }
     return undefined */
+}
+export const getAddressByCountry = async (countryAddress : string ): Promise<GetAddressEntry[] | null> =>{
+    const addressResult = await Address.find({ country: { $eq: countryAddress }});
+    return addressResult
 }
